@@ -2,6 +2,7 @@ import requests
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 
+# Flask app
 app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///weather.db'
@@ -12,7 +13,7 @@ class City(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
 
-
+# Front page
 @app.route('/')
 def index():
     cities = City.query.all()
@@ -21,8 +22,6 @@ def index():
     weather_data = list()
 
     for city in cities:
-        print(city.name)
-
         r = requests.get(url.format(city.name)).json()
         weather = {
             'city' : city.name,
@@ -30,7 +29,6 @@ def index():
             'description' : r['weather'][0]['description'],
             'icon' : r['weather'][0]['icon'],
         }
-
         weather_data.append(weather)
 
     return render_template('weather.html', weather_data=weather_data)
