@@ -33,12 +33,15 @@ def index():
 
     for city in cities:
         r = requests.get(url.format(city.name)).json()
-        weather = {
+        try:
+            weather = {
             'city' : city.name,
             'temperature' : r['main']['temp'],
             'description' : r['weather'][0]['description'],
             'icon' : r['weather'][0]['icon'],
-        }
-        weather_data.append(weather)
+            }
+            weather_data.append(weather)
+        except Exception:
+            pass
 
     return render_template('weather.html', weather_data=weather_data)
